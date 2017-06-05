@@ -1,0 +1,41 @@
+@import "../vars";
+
+form{
+  margin: 30px auto;
+  text-align: center;
+}
+
+input{
+  display: block;
+  width: 350px;
+  margin: 10px auto;
+  height: 30px;
+}
+
+input[type=text], input[type=password]{
+  padding: 5px 10px;
+  border-radius: 5px;
+  outline: none;
+  border: 1px solid #c3c3c3;
+}
+
+button, input[type=submit]{
+  border-radius: 5px;
+  background-color: #3f63dd;
+  outline: none;
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  height: 40px;
+  cursor: pointer;
+
+  &:hover{
+    background-color: lighten(#3f63dd, 10);
+
+  }
+}
+
+.error{
+  font-size: 14px;
+  color: $status-err;
+}

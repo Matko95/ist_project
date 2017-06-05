@@ -1,0 +1,25 @@
+/*Mixins*/
+@import "mixins/mixins";
+
+/*Config*/
+@import "config/reset";
+
+/*Components*/
+@import "components/header";
+@import "components/form";
+
+/*Pages*/
+
+/*Icons*/
+@import "config/fonts";
+
+
+@import "vars";
+
+/*Scale the font-size for rems*/
+html{
+  font-size: 62.5%;
+}
+* {
+  font-family: $font-default;
+}
