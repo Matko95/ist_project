@@ -31,8 +31,6 @@ export const login = (username, password) => {
         body: `username=${username}&password=${password}`
     };
 
-    console.log(config);
-
     return dispatch => {
         dispatch(login_request());
 
