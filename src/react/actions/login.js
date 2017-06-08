@@ -36,15 +36,39 @@ export const login = (username, password) => {
 
         return fetch(`/login`, config)
             .then(response => response.json()
-            .then(data => ({ data, response })))
+                .then(data => ({ data, response })))
             .then(({ data, response }) =>  {
                 if (!response.ok) {
-                     return dispatch(login_error(data.message));
+                    return dispatch(login_error(data.message));
                 }
 
                 localStorage.setItem("jwt", data.jwt);
                 dispatch(login_success())
             })
             .catch(err => dispatch(login_error(err)));
+    }
+};
+
+export const checkLogin = () => {
+    let config = {
+        method: "GET",
+        headers: {
+            'Content-Type':'application/x-www-form-urlencoded',
+            'Authorization':'Bearer ' + localStorage.getItem("jwt")
+        }
+    };
+
+    return dispatch => {
+        return fetch(`/checkToken`, config)
+            .then(response => response.json()
+            .then(data => ({ data, response })))
+            .then(({ data, response }) =>  {
+                if(!data.ok){
+                    localStorage.clear();
+                    dispatch({
+                        type: 'CLEAR_STORE'
+                    })
+                }
+            })
     }
 };

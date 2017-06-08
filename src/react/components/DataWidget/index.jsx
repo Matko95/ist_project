@@ -21,7 +21,7 @@ export default class DataWidget extends Component {
                             </div>
                             <div className="right-side">
                                 <button className="delete" onClick={()=>this.props.deleteData('automobil',item.id_automobil, 'automobili', i)}>Obrisi</button>
-                                <button onClick={this.props.openModal('automobil')}>Izmeni</button>
+                                <button onClick={() => this.props.openModal('automobil', {...item, index: i})}>Izmeni</button>
                             </div>
                         </div>
                     ))
@@ -35,7 +35,7 @@ export default class DataWidget extends Component {
                             </div>
                             <div className="right-side">
                                 <button className="delete" onClick={()=>this.props.deleteData('korisnik',item.id_korisnik, 'korisnici', i)}>Obrisi</button>
-                                <button onClick={this.props.openModal('korisnik')}>Izmeni</button>
+                                <button onClick={() => this.props.openModal('korisnik', {...item, index: i})}>Izmeni</button>
                             </div>
                         </div>
                     ))
@@ -46,15 +46,17 @@ export default class DataWidget extends Component {
                         <div className="widget-item" key={item.id_popravka}>
                             <div className="left-side">
                                 <p>Deo: {item.deo}</p>
-                                <p>Cena: {item.cena}</p>
+                                <p>Cena: {item.cena_dela}</p>
                             </div>
                             <div className="right-side">
                                 <button className="delete" onClick={()=>this.props.deleteData('popravka',item.id_popravka, 'popravke', i)}>Obrisi</button>
-                                <button onClick={this.props.openModal('popravka')}>Izmeni</button>
+                                <button onClick={() => this.props.openModal('popravka', {...item, index: i})}>Izmeni</button>
                             </div>
                         </div>
                     ))
                 }
+                <hr/>
+                <button className="add" onClick={()=> this.props.openModal(this.props.form, {}, true)}>Dodaj</button>
             </div>
         )
     }
