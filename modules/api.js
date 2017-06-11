@@ -11,6 +11,13 @@ let connection = mysql.createConnection({
 
 connection.connect();
 
+let getToken = (request) => {
+    let header = request.header('Authorization');
+    if(header && header.split(' ').length > 1)
+        return header.split(' ')[1];
+    return false;
+}
+
 let auth = (req, res) => {
     let body = req.body;
     let { username, password } = body;
@@ -42,7 +49,7 @@ let auth = (req, res) => {
 };
 
 let checkToken = (req, res) => {
-    let token = req.header('authorization').split(' ')[1];
+    let token = getToken(req);
 
     try {
         jwt.verify(token, config.secret);
@@ -59,7 +66,7 @@ let checkToken = (req, res) => {
 };
 
 let getAutomobili = (req, res) => {
-    let token = req.header('authorization').split(' ')[1];
+    let token = getToken(req);
     const query = `SELECT * FROM automobil`;
 
     try {
@@ -83,7 +90,7 @@ let getAutomobili = (req, res) => {
 };
 
 let getPopravke = (req, res) => {
-    let token = req.header('authorization').split(' ')[1];
+    let token = getToken(req);
     const query = `SELECT * FROM popravka`;
 
     try {
@@ -107,7 +114,7 @@ let getPopravke = (req, res) => {
 };
 
 let getKorisnici = (req, res) => {
-    let token = req.header('authorization').split(' ')[1];
+    let token = getToken(req);
     const query = `SELECT id_korisnik, korisnicko_ime FROM korisnik`;
 
     try {
@@ -134,7 +141,7 @@ let getKorisnici = (req, res) => {
 };
 
 let obrisi = (req, res) => {
-    let token = req.header('authorization').split(' ')[1];
+    let token = getToken(req);
     let id = req.params.id;
     let tabela = req.body.tabela;
 
@@ -164,7 +171,7 @@ let obrisi = (req, res) => {
 };
 
 let editKorisnik = (req, res) => {
-    let token = req.header('authorization').split(' ')[1];
+    let token = getToken(req);
     let id_korisnik = req.body.id_korisnik || "";
     let korisnicko_ime = req.body.korisnicko_ime || "";
     let lozinka = req.body.lozinka || "";
@@ -195,7 +202,7 @@ let editKorisnik = (req, res) => {
 };
 
 let editAutomobil = (req, res) => {
-    let token = req.header('authorization').split(' ')[1];
+    let token = getToken(req);
     let id_automobil = req.body.id_automobil || "";
     let podaci = req.body.podaci || "";
     let status = req.body.status || "";
@@ -228,7 +235,7 @@ let editAutomobil = (req, res) => {
 };
 
 let editPopravka = (req, res) => {
-    let token = req.header('authorization').split(' ')[1];
+    let token = getToken(req);
     let id_popravka = req.body.id_popravka || "";
     let deo = req.body.deo || "";
     let cena_dela = req.body.cena_dela || "";
@@ -259,7 +266,7 @@ let editPopravka = (req, res) => {
 };
 
 let addAutomobil = (req, res) => {
-    let token = req.header('authorization').split(' ')[1];
+    let token = getToken(req);
     let podaci = req.body.podaci || "";
     let status = req.body.status || "";
     let cena_popravke = req.body.cena_popravke || "";
@@ -293,7 +300,7 @@ let addAutomobil = (req, res) => {
 };
 
 let addKorisnik = (req, res) => {
-    let token = req.header('authorization').split(' ')[1];
+    let token = getToken(req);
     let korisnicko_ime = req.body.korisnicko_ime || "";
     let lozinka = req.body.lozinka || "";
 
@@ -324,7 +331,7 @@ let addKorisnik = (req, res) => {
 };
 
 let addPopravka = (req, res) => {
-    let token = req.header('authorization').split(' ')[1];
+    let token = getToken(req);
     let deo = req.body.deo || "";
     let cena_dela = req.body.cena_dela || "";
 
@@ -353,6 +360,32 @@ let addPopravka = (req, res) => {
     }
 };
 
+let getAutomobiliByUser = (req, res) => {
+    let token = getToken(req);
+    let korisnik_id = req.params.id;
+
+    const query = `SELECT * FROM automobil WHERE korisnik_id=${korisnik_id}`;
+
+    try {
+        const decoded = jwt.verify(token, config.secret);
+
+        connection.query(query, (error, results, fields) => {
+            if(error) {
+                console.error(error);
+                return res.status(400).send({
+                    message: 'MYSQL error',
+                    ok: false
+                })
+            }
+
+            res.status(200).send(results);
+        })
+    } catch(err) {
+        console.log(err);
+        res.status(401).send({error: 'Session expired or unauthorized access.'});
+    }
+}
+
 
 
 
@@ -361,6 +394,7 @@ let applyRoutes = (app) => {
     app.get('/checkToken', checkToken);
     app.get('/popravke', getPopravke);
     app.get('/automobili', getAutomobili);
+    app.get('/automobili/:id', getAutomobiliByUser);
     app.get('/korisnici', getKorisnici);
     app.post('/obrisi/:id', obrisi);
     app.post('/login', auth);

@@ -1,6 +1,7 @@
 let path = require('path'),
     express = require('express'),
-    bodyParser = require('body-parser');
+    bodyParser = require('body-parser'),
+    cors = require('cors');
 
 
 let config = {
@@ -14,6 +15,10 @@ let applyConfiguration = function (app) {
         app.use(bodyParser.json());
         // parse application/x-www-form-urlencoded
         app.use(bodyParser.urlencoded({ extended: true }));
+
+        app.use(cors())
+
+        app.maxConnections = 3;
 
 
         // Serve static content from "public" directory
